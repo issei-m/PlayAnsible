@@ -1,0 +1,19 @@
+---
+- name: ensure nginx has been installed
+  yum: name=nginx state=installed
+
+- name: ensure nginx is running and enabled
+  service: name=nginx state=running enabled=yes
+
+- name: ensure default configurations of nginx have been deleted
+  file: path=/etc/nginx/conf.d/{{ item }} state=absent
+  with_items:
+    - default.conf
+    - ssl.conf
+  notify:
+    - restart nginx
+
+- name: write nginx configuration
+  template: src="templates/nginx/www.conf" dest="/etc/nginx/conf.d/www.conf"
+  notify:
+    - restart nginx

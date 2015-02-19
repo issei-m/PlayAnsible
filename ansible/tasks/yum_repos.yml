@@ -1,0 +1,9 @@
+---
+- name: ensure REMI repository has been installed to YUM
+  yum: name=http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+
+- name: ensure and REMI repository has been disable by default
+  replace: dest=/etc/yum.repos.d/{{ item }} regexp="enabled *= *1" replace="enabled=0"
+  with_items:
+    - epel.repo
+    - remi.repo

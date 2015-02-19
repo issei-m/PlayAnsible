@@ -6,3 +6,6 @@ if ! [ `which ansible` ]; then
     sudo sed -ir 's@^mirrorlist=@#mirrorlist=@g' /etc/yum.repos.d/epel.repo
     sudo yum install -y ansible
 fi
+
+cd ansible
+ansible-playbook devserver.yml -i hosts

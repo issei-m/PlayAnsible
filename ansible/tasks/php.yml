@@ -1,0 +1,27 @@
+---
+- name: ensure php55 has been installed
+  yum: name={{ item }} state=installed enablerepo=epel,remi,remi-php55
+  with_items:
+    - php
+    - php-fpm
+    - php-mbstring
+    - php-mysqlnd
+    - php-mcrypt
+    - php-intl
+    - php-gd
+    - php-pecl-zendopcache
+    - php-pecl-apcu
+    - php-pecl-xdebug
+
+- name: ensure php-fpm is running and enabled
+  service: name=php-fpm state=running enabled=yes
+
+- name: ensure php-fpm will be listened with UNIX socket in favor of TCP/IP
+  replace: dest=/etc/php-fpm.d/www.conf regexp="^listen *=.+?$" replace="listen = /var/run/php-fpm/www.sock"
+  notify:
+    - restart php-fpm
+
+- name: ensure UNIX socket file of php-fpm is allowed to access by nginx
+  replace: dest=/etc/php-fpm.d/www.conf regexp="^;?listen.(owner|group) *=.+?$" replace="listen.\1 = nginx"
+  notify:
+    - restart php-fpm

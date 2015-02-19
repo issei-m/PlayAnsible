@@ -1,0 +1,15 @@
+- hosts: localhost
+  sudo: yes
+  vars:
+    nginx:
+      document_root: /vagrant
+  tasks:
+    - include: tasks/nginx.yml
+    - include: tasks/yum_repos.yml
+    - include: tasks/php.yml
+
+    - name: be sure iptables is stopped and disabled
+      service: name=iptables state=stopped enabled=no
+  handlers:
+    - include: handlers/nginx.yml
+    - include: handlers/php.yml
